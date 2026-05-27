@@ -13,9 +13,9 @@ def main():
             if userarg[5:] == "echo" or userarg[5:] == "exit" :
                 print(f"{userarg[5:]} is a shell builtin")
             else:
-                print(f"{userarg[5:]}: command not found")
+                print(f"{userarg[5:]}: not found")
         else:
-            print(f"{userarg}: not found")
+            print(f"{userarg}: command not found")
 
 if __name__ == "__main__":
     main()
