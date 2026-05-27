@@ -7,8 +7,11 @@ def main():
         userarg = input()
         if userarg == "exit":
             break
-        print(f"{userarg}: command not found")
-
+        elif userarg[:5] == "echo ":
+            print(userarg[5:])
+          
+        else:
+            print(f"{userarg}: command not found")
 
 if __name__ == "__main__":
     main()
