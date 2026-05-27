@@ -9,9 +9,13 @@ def main():
             break
         elif userarg[:5] == "echo ":
             print(userarg[5:])
-          
+        elif userarg[:5] == "type ":
+            if userarg[5:] == "echo" or userarg[5:] == "exit" :
+                print(f"{userarg[5:]} is a shell builtin")
+            else:
+                print(f"{userarg[5:]}: command not found")
         else:
-            print(f"{userarg}: command not found")
+            print(f"{userarg}: not found")
 
 if __name__ == "__main__":
     main()
