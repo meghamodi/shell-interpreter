@@ -10,7 +10,7 @@ def main():
         elif userarg[:5] == "echo ":
             print(userarg[5:])
         elif userarg[:5] == "type ":
-            if userarg[5:] == "echo" or userarg[5:] == "exit" :
+            if userarg[5:] == "echo" or userarg[5:] == "exit" or userarg[5:] == "type" :
                 print(f"{userarg[5:]} is a shell builtin")
             else:
                 print(f"{userarg[5:]}: not found")
