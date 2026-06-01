@@ -21,20 +21,46 @@ def main():
                     # change dir, then search for the command, if not go to next dir
                     try:
                         entries= os.listdir(dir)
+                        
                         if cmd in entries:
                             fullPath = os.path.join(dir,cmd)
+                            print("full",fullPath)
                             if os.access(fullPath,os.X_OK):
                                 print(f"{cmd} is {fullPath}")
                                 break
                         
                     except:
                         continue
-                else:
-                    # only runs if loop exhausted all dirs without break
-                    print(f"{cmd}: not found")
-
         else:
-            print(f"{userarg}: command not found")
+                cmd = userarg.split()
+                executable = cmd[0]
+                args = cmd[1:]
+                found = False
+            
+                for dir in PATH.split(":"):
+                    # change dir, then search for the command, if not go to next dir
+                    try:
+                        entries= os.listdir(dir)
+                        
+                        if executable in entries:
+                            fullPath = os.path.join(dir,executable)
+                            if os.access(fullPath,os.X_OK):
+                                found = True
+                                pid=os.fork()
+                                if pid ==0:
+
+                                    os.execv(fullPath,[executable]+ args)
+                                else:
+                                    os.wait()
+                                break
+                            
+                    except:
+                        continue         
+        
+                if not found:
+                    print(f"{executable}: not found")
+
+        
 
 if __name__ == "__main__":
     main()
