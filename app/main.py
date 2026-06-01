@@ -30,6 +30,8 @@ def main():
                         
                     except:
                         continue
+                else:
+                    print(f"{cmd}: not found")
         else:
                 cmd = userarg.split()
                 executable = cmd[0]
@@ -47,7 +49,6 @@ def main():
                                 found = True
                                 pid=os.fork()
                                 if pid ==0:
-
                                     os.execv(fullPath,[executable]+ args)
                                 else:
                                     os.wait()
@@ -58,7 +59,7 @@ def main():
         
                 if not found:
                     print(f"{executable}: not found")
-        print(f"{cmd}: not found")
+       
         
    
 
