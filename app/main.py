@@ -24,7 +24,6 @@ def main():
                         
                         if cmd in entries:
                             fullPath = os.path.join(dir,cmd)
-                            
                             if os.access(fullPath,os.X_OK):
                                 print(f"{cmd} is {fullPath}")
                                 break
@@ -59,8 +58,9 @@ def main():
         
                 if not found:
                     print(f"{executable}: not found")
-
+        print(f"{cmd}: not found")
         
+   
 
 if __name__ == "__main__":
     main()
