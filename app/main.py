@@ -24,7 +24,7 @@ def main():
                         
                         if cmd in entries:
                             fullPath = os.path.join(dir,cmd)
-                            print("full",fullPath)
+                            
                             if os.access(fullPath,os.X_OK):
                                 print(f"{cmd} is {fullPath}")
                                 break
