@@ -13,6 +13,13 @@ def main():
             print(userarg[5:])
         elif userarg[:4] == "pwd":
             print(os.getcwd())
+        elif userarg[:2] == "cd":
+                path= userarg[2:].strip()
+                if os.path.exists(path):
+                    os.chdir(path)
+                else:
+                    print(f"{userarg[:2]} :{userarg[2:]}: No such file or directory")
+
         elif userarg[:5] == "type ":
             if userarg[5:] == "echo" or userarg[5:] == "exit" or userarg[5:] == "type" or userarg[5:]=="pwd" :
                 print(f"{userarg[5:]} is a shell builtin")
