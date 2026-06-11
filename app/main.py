@@ -11,9 +11,12 @@ def main():
             break
         elif userarg[:5] == "echo ":
             print(userarg[5:])
+        elif userarg[:4] == "pwd":
+            print(os.getcwd())
         elif userarg[:5] == "type ":
-            if userarg[5:] == "echo" or userarg[5:] == "exit" or userarg[5:] == "type" :
+            if userarg[5:] == "echo" or userarg[5:] == "exit" or userarg[5:] == "type" or userarg[5:]=="pwd" :
                 print(f"{userarg[5:]} is a shell builtin")
+
                 
             else:
                 cmd = userarg[5:]
