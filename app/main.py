@@ -18,7 +18,7 @@ def main():
                 if os.path.exists(path):
                     os.chdir(path)
                 else:
-                    print(f"{userarg[:2]} :{userarg[2:]}: No such file or directory")
+                    print(f"{userarg[:2]}:{userarg[2:]}: No such file or directory")
 
         elif userarg[:5] == "type ":
             if userarg[5:] == "echo" or userarg[5:] == "exit" or userarg[5:] == "type" or userarg[5:]=="pwd" :
