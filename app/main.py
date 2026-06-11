@@ -17,8 +17,17 @@ def main():
                 path= userarg[2:].strip()
                 if os.path.exists(path):
                     os.chdir(path)
+                elif path == './':
+                    continue
+                elif path == '../':
+                    os.chdir('..')
+                elif path.startswith('./'):
+                    os.chdir(path)
+                elif path == '~':
+                    os.chdir('/')
                 else:
                     print(f"{userarg[:2]}:{userarg[2:]}: No such file or directory")
+
 
         elif userarg[:5] == "type ":
             if userarg[5:] == "echo" or userarg[5:] == "exit" or userarg[5:] == "type" or userarg[5:]=="pwd" :
