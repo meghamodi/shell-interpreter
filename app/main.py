@@ -24,7 +24,8 @@ def main():
                 elif path.startswith('./'):
                     os.chdir(path)
                 elif path == '~':
-                    os.chdir('/')
+                    homeDir= os.getenv('HOME')
+                    os.chdir(homeDir)
                 else:
                     print(f"{userarg[:2]}:{userarg[2:]}: No such file or directory")
 
