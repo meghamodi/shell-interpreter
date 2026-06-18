@@ -9,8 +9,32 @@ def main():
         
         if userarg == "exit":
             break
+        
         elif userarg[:5] == "echo ":
-            print(userarg[5:])
+
+            s= userarg[5:]
+            result=""
+            current=""
+            in_quote= False
+            first=True
+            
+            for ch in s:
+                if ch =="'":
+                    in_quote = not in_quote
+                    continue
+                if ch ==" " and not in_quote:
+                    if current:
+                        result += current
+                        current=""
+                        first=False
+                else:
+                    current +=ch
+            if current:
+                if not first:
+                    result += " "
+                result += current
+            print(result)
+            
         elif userarg[:4] == "pwd":
             print(os.getcwd())
         elif userarg[:2] == "cd":
@@ -33,7 +57,7 @@ def main():
         elif userarg[:5] == "type ":
             if userarg[5:] == "echo" or userarg[5:] == "exit" or userarg[5:] == "type" or userarg[5:]=="pwd" :
                 print(f"{userarg[5:]} is a shell builtin")
-
+        
                 
             else:
                 cmd = userarg[5:]
