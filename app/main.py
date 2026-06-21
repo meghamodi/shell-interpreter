@@ -21,9 +21,9 @@ def parse_redirect(args):
     target_fd = operator_fd[matchOperator]
     return content, output_file,target_fd
 
-def write_output(text,file):
-    if file:
-        with open(file,'w') as f:
+def write_output(text,output_file,target_fd):
+    if output_file and target_fd==1:
+        with open(output_file,'w') as f:
             f.write(text + "\n")
     else:
         print(text)
@@ -42,9 +42,8 @@ def main():
 
             s= userarg[5:]
             args = shlex.split(s)
-            
             args,output_file,target_fd = parse_redirect(args)
-            write_output(' '.join(args),output_file)
+            write_output(' '.join(args),output_file,target_fd)
 
         elif userarg[:4] == "pwd":
             print(os.getcwd())
