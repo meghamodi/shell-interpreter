@@ -43,9 +43,8 @@ def main():
             s= userarg[5:]
             args = shlex.split(s)
             
-            args,output_file = parse_redirect(args)
+            args,output_file,target_fd = parse_redirect(args)
             write_output(' '.join(args),output_file)
-
 
         elif userarg[:4] == "pwd":
             print(os.getcwd())
