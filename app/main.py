@@ -17,7 +17,7 @@ def main():
             current=""
             in_quote= False
             first=True
-            
+
             for ch in s:
                 if ch =="'":
                     in_quote = not in_quote
@@ -31,7 +31,7 @@ def main():
                     current +=ch
             if current:
                 if not first:
-                    result += " "
+                    result += ""
                 result += current
             print(result)
             
