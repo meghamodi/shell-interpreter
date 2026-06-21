@@ -24,6 +24,8 @@ def main():
                     continue
                 if ch ==" " and not in_quote:
                     if current:
+                        if not first:
+                            result += " "
                         result += current
                         current=""
                         first=False
@@ -31,7 +33,7 @@ def main():
                     current +=ch
             if current:
                 if not first:
-                    result += ""
+                    result += " "
                 result += current
             print(result)
             
