@@ -26,7 +26,9 @@ def write_output(text,output_file,target_fd):
         with open(output_file,'w') as f:
             f.write(text + "\n")
     else:
-        print(text)
+        open(output_file, 'w').close()
+    
+    print(text)
         
 
 def main():
