@@ -1,8 +1,6 @@
 import sys
 import os
 import shlex
-import subprocess
-from pathlib import Path
 
 def parse_redirect(args):
     operator_fd= {">":1
@@ -25,10 +23,11 @@ def write_output(text,output_file,target_fd):
     if output_file and target_fd==1:
         with open(output_file,'w') as f:
             f.write(text + "\n")
-    else:
+    elif target_fd == 2:
         open(output_file, 'w').close()
+    else:
     
-    print(text)
+        print(text)
         
 
 def main():
