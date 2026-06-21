@@ -2,6 +2,27 @@ import sys
 import os
 import shlex
 import subprocess
+from pathlib import Path
+
+def parse_redirect(args):
+    operator= [">","1>"]
+    matchOperator= next((x for x in operator if x in args),None)
+
+    if matchOperator is None:
+        return args,None
+    operIndex = args.index(matchOperator)
+    content = args[:operIndex]
+    output_file = args[operIndex+1]
+    
+    return content, output_file
+
+def write_output(text,file):
+    if file:
+        with open(file,'w') as f:
+            f.write(text + "\n")
+    else:
+        print(text)
+        
 
 def main():
     PATH = os.environ["PATH"]
@@ -16,7 +37,10 @@ def main():
 
             s= userarg[5:]
             args = shlex.split(s)
-            print(" ".join(args))
+            
+            args,output_file = parse_redirect(args)
+            write_output(' '.join(args),output_file)
+
 
         elif userarg[:4] == "pwd":
             print(os.getcwd())
@@ -61,6 +85,7 @@ def main():
                     print(f"{cmd}: not found")
         else:
                 cmd = shlex.split(userarg)
+                cmd,output_file = parse_redirect(cmd)
                 executable = cmd[0]
                 args = cmd[1:]
                 found = False
@@ -76,6 +101,10 @@ def main():
                                 found = True
                                 pid=os.fork()
                                 if pid ==0:
+                                    if output_file:
+                                        fd = os.open(output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+                                        os.dup2(fd, 1)   # redirect stdout (fd 1) to the file
+                                        os.close(fd)
                                     os.execv(fullPath,[executable]+ args)
                                 else:
                                     os.wait()
