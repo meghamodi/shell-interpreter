@@ -5,16 +5,21 @@ import subprocess
 from pathlib import Path
 
 def parse_redirect(args):
-    operator= [">","1>"]
-    matchOperator= next((x for x in operator if x in args),None)
+    operator_fd= {">":1
+    ,"1>":1
+    ,"2>":2
+    }
+    matchOperator= next((x for x in operator_fd if x in args),None)
 
     if matchOperator is None:
-        return args,None
+        return args,None,None
+
     operIndex = args.index(matchOperator)
+    
     content = args[:operIndex]
     output_file = args[operIndex+1]
-    
-    return content, output_file
+    target_fd = operator_fd[matchOperator]
+    return content, output_file,target_fd
 
 def write_output(text,file):
     if file:
@@ -85,7 +90,7 @@ def main():
                     print(f"{cmd}: not found")
         else:
                 cmd = shlex.split(userarg)
-                cmd,output_file = parse_redirect(cmd)
+                cmd,output_file,target_fd = parse_redirect(cmd)
                 executable = cmd[0]
                 args = cmd[1:]
                 found = False
@@ -103,8 +108,10 @@ def main():
                                 if pid ==0:
                                     if output_file:
                                         fd = os.open(output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
-                                        os.dup2(fd, 1)   # redirect stdout (fd 1) to the file
+                                        os.dup2(fd, target_fd)   # redirect stdout (fd 1) to the file
                                         os.close(fd)
+                    
+
                                     os.execv(fullPath,[executable]+ args)
                                 else:
                                     os.wait()
