@@ -16,7 +16,7 @@ def main():
 
             s= userarg[5:]
             args = shlex.split(s)
-            print("".join(args))
+            print(" ".join(args))
 
         elif userarg[:4] == "pwd":
             print(os.getcwd())
