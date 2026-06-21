@@ -1,5 +1,7 @@
 import sys
 import os
+import shlex
+import subprocess
 
 def main():
     PATH = os.environ["PATH"]
@@ -13,30 +15,9 @@ def main():
         elif userarg[:5] == "echo ":
 
             s= userarg[5:]
-            result=""
-            current=""
-            in_quote= False
-            first=True
+            args = shlex.split(s)
+            print("".join(args))
 
-            for ch in s:
-                if ch =="'":
-                    in_quote = not in_quote
-                    continue
-                if ch ==" " and not in_quote:
-                    if current:
-                        if not first:
-                            result += " "
-                        result += current
-                        current=""
-                        first=False
-                else:
-                    current +=ch
-            if current:
-                if not first:
-                    result += " "
-                result += current
-            print(result)
-            
         elif userarg[:4] == "pwd":
             print(os.getcwd())
         elif userarg[:2] == "cd":
@@ -79,7 +60,7 @@ def main():
                 else:
                     print(f"{cmd}: not found")
         else:
-                cmd = userarg.split()
+                cmd = shlex.split(userarg)
                 executable = cmd[0]
                 args = cmd[1:]
                 found = False
