@@ -32,10 +32,12 @@ def write_output(text,output_file,target_fd,fdOp):
     elif output_file and target_fd==1 and fdOp in (">","1>"):
         with open(output_file,'w') as f:
             f.write(text + "\n")
-    
-    elif target_fd == 2:
-        open(output_file, 'w').close()
-        print(text)
+    elif output_file and target_fd==2 and fdOp in "2>>":
+        with open(output_file,'a') as f:
+            f.write(text + "\n")
+    elif output_file and target_fd==2 and fdOp in "2>":
+        with open(output_file, 'w') as f:
+            f.write(text + "\n")
     else:
         print(text)
         
@@ -116,7 +118,7 @@ def main():
                                 pid=os.fork()
                                 if pid ==0:
                                     if output_file:
-                                        if fdOp in (">>", "1>>"):
+                                        if fdOp in (">>", "1>>","2>>"):
                                             fdOp = os.open(output_file, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
                                         else:
                                             fdOp = os.open(
