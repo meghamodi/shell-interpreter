@@ -46,6 +46,9 @@ def write_output(text,output_file,target_fd,fdOp):
     elif output_file and target_fd==1 and fdOp in (">","1>"):
         with open(output_file,'w') as f:
             f.write(text + "\n")
+    elif target_fd==2:
+        open(output_file, 'w').close()
+        print(text)
     else:
         print(text)
         
