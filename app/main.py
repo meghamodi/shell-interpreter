@@ -12,30 +12,45 @@ def parse_redirect(args):
     ,">":1
     
     }
-    matchOperator= next((x for x in operator_fd if x in args),None)
+    matchOperator = None
+    operIndex = None
+    for i,arg in enumerate(args):
+        for op in operator_fd:
+            if arg.startswith(op):
+                matchOperator = op
+                operIndex = i
+                break
+
+        if matchOperator:
+            break
 
     if matchOperator is None:
-        return args,None,None,None
+        return args, None, None, None
 
-    operIndex = args.index(matchOperator)
-    
-    content = args[:operIndex]
-    output_file = args[operIndex+1]
     target_fd = operator_fd[matchOperator]
-    fdOp= matchOperator
-    return content, output_file,target_fd,fdOp
+
+    if args[operIndex] == matchOperator:
+        output_file = args[operIndex + 1]
+    else:
+        output_file = args[operIndex][len(matchOperator):]
+
+    content = args[:operIndex]
+
+    return content, output_file, target_fd, matchOperator
+
 
 def write_output(text,output_file,target_fd,fdOp):
+    print("DEBUG:", text, output_file, target_fd, fdOp)
     if output_file and fdOp in ("1>>", ">>"):
         with open(output_file,'a') as f:
             f.write(text + "\n")
     elif output_file and target_fd==1 and fdOp in (">","1>"):
         with open(output_file,'w') as f:
             f.write(text + "\n")
-    elif output_file and target_fd==2 and fdOp in "2>>":
+    elif output_file and target_fd==2 and fdOp == "2>>":
         with open(output_file,'a') as f:
             f.write(text + "\n")
-    elif output_file and target_fd==2 and fdOp in "2>":
+    elif output_file and target_fd==2 and fdOp == "2>":
         with open(output_file, 'w') as f:
             f.write(text + "\n")
     else:
@@ -126,7 +141,7 @@ def main():
                                                     os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
                                                     0o644
                                                 )
-                                        os.dup2(fdOp, target_fd)   # redirect stdout (fd 1) to the file
+                                        os.dup2(fdOp, target_fd)   
                                         os.close(fdOp)
                     
 
