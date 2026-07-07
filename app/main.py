@@ -6,28 +6,34 @@ def parse_redirect(args):
     operator_fd= {">":1
     ,"1>":1
     ,"2>":2
+    ,">>": 1
+    ,"1>>":1
     }
     matchOperator= next((x for x in operator_fd if x in args),None)
 
     if matchOperator is None:
-        return args,None,None
+        return args,None,None,None
 
     operIndex = args.index(matchOperator)
     
     content = args[:operIndex]
     output_file = args[operIndex+1]
     target_fd = operator_fd[matchOperator]
-    return content, output_file,target_fd
+    fd= matchOperator
+    return content, output_file,target_fd,fd
 
-def write_output(text,output_file,target_fd):
-    if output_file and target_fd==1:
+def write_output(text,output_file,target_fd,fd):
+    if output_file and fd in ("1>>", ">>"):
+        with open(output_file,'a') as f:
+            f.write(text + "\n")
+    elif output_file and target_fd==1:
         with open(output_file,'w') as f:
             f.write(text + "\n")
+    
     elif target_fd == 2:
         open(output_file, 'w').close()
         print(text)
     else:
-    
         print(text)
         
 
@@ -44,8 +50,8 @@ def main():
 
             s= userarg[5:]
             args = shlex.split(s)
-            args,output_file,target_fd = parse_redirect(args)
-            write_output(' '.join(args),output_file,target_fd)
+            args,output_file,target_fd,fd = parse_redirect(args)
+            write_output(' '.join(args),output_file,target_fd,fd)
 
         elif userarg[:4] == "pwd":
             print(os.getcwd())
@@ -90,7 +96,7 @@ def main():
                     print(f"{cmd}: not found")
         else:
                 cmd = shlex.split(userarg)
-                cmd,output_file,target_fd = parse_redirect(cmd)
+                cmd,output_file,target_fd,fd = parse_redirect(cmd)
                 executable = cmd[0]
                 args = cmd[1:]
                 found = False
