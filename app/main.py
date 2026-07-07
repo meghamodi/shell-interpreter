@@ -3,11 +3,14 @@ import os
 import shlex
 
 def parse_redirect(args):
-    operator_fd= {">":1
+    operator_fd= {
+    "1>>":1
+    ,"2>>":2
+    ,">>": 1
     ,"1>":1
     ,"2>":2
-    ,">>": 1
-    ,"1>>":1
+    ,">":1
+    
     }
     matchOperator= next((x for x in operator_fd if x in args),None)
 
@@ -19,14 +22,14 @@ def parse_redirect(args):
     content = args[:operIndex]
     output_file = args[operIndex+1]
     target_fd = operator_fd[matchOperator]
-    fd= matchOperator
-    return content, output_file,target_fd,fd
+    fdOp= matchOperator
+    return content, output_file,target_fd,fdOp
 
-def write_output(text,output_file,target_fd,fd):
-    if output_file and fd in ("1>>", ">>"):
+def write_output(text,output_file,target_fd,fdOp):
+    if output_file and fdOp in ("1>>", ">>"):
         with open(output_file,'a') as f:
             f.write(text + "\n")
-    elif output_file and target_fd==1 and fd in (">","1>"):
+    elif output_file and target_fd==1 and fdOp in (">","1>"):
         with open(output_file,'w') as f:
             f.write(text + "\n")
     
@@ -50,8 +53,8 @@ def main():
 
             s= userarg[5:]
             args = shlex.split(s)
-            args,output_file,target_fd,fd = parse_redirect(args)
-            write_output(' '.join(args),output_file,target_fd,fd)
+            args,output_file,target_fd,fdOp = parse_redirect(args)
+            write_output(' '.join(args),output_file,target_fd,fdOp)
 
         elif userarg[:4] == "pwd":
             print(os.getcwd())
@@ -96,7 +99,7 @@ def main():
                     print(f"{cmd}: not found")
         else:
                 cmd = shlex.split(userarg)
-                cmd,output_file,target_fd,fd = parse_redirect(cmd)
+                cmd,output_file,target_fd,fdOp = parse_redirect(cmd)
                 executable = cmd[0]
                 args = cmd[1:]
                 found = False
@@ -113,9 +116,16 @@ def main():
                                 pid=os.fork()
                                 if pid ==0:
                                     if output_file:
-                                        fd = os.open(output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
-                                        os.dup2(fd, target_fd)   # redirect stdout (fd 1) to the file
-                                        os.close(fd)
+                                        if fdOp in (">>", "1>>"):
+                                            fdOp = os.open(output_file, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
+                                        else:
+                                            fdOp = os.open(
+                                                    output_file,
+                                                    os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
+                                                    0o644
+                                                )
+                                        os.dup2(fdOp, target_fd)   # redirect stdout (fd 1) to the file
+                                        os.close(fdOp)
                     
 
                                     os.execv(fullPath,[executable]+ args)
