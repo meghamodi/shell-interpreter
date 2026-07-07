@@ -26,7 +26,7 @@ def write_output(text,output_file,target_fd,fd):
     if output_file and fd in ("1>>", ">>"):
         with open(output_file,'a') as f:
             f.write(text + "\n")
-    elif output_file and target_fd==1:
+    elif output_file and target_fd==1 and fd in (">","1>"):
         with open(output_file,'w') as f:
             f.write(text + "\n")
     
