@@ -40,7 +40,6 @@ def parse_redirect(args):
 
 
 def write_output(text,output_file,target_fd,fdOp):
-    print("DEBUG:", text, output_file, target_fd, fdOp)
     if output_file and fdOp in ("1>>", ">>"):
         with open(output_file,'a') as f:
             f.write(text + "\n")
